@@ -15,8 +15,13 @@ fetch("http://localhost:3000/api/products")
       `
       ;
     }
+    
 })
+
+
 .catch((error=> {
   console.log(error)
 }))
 ;
+
+
