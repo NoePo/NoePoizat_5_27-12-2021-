@@ -1,5 +1,6 @@
 /* Ajouter un produit */
 
+let listCart = JSON.parse(localStorage.getItem('listCart'))
 let params = (new URL(document.location)).searchParams;
 let articlesId = params.get('id'); 
 
@@ -24,14 +25,26 @@ fetch("http://localhost:3000/api/products/"+articlesId)
                    id: articlesId,
                    color: color,
                    quantity: quantity
-                } 
-                saveCart(productChose); 
+                }
+                
+                if (Array.isArray(listCart)) {
+                listCart.push(productChose)
+                }
+                else {
+                listCart = [
+                productChose
+                ]
+                }
+                ;
+                
+
+                saveCart(listCart); 
         });
 
 })
 
-function saveCart(listCart){
-        localStorage.setItem("listCart", JSON.stringify(listCart));
+function saveCart(newCart){
+        localStorage.setItem("listCart", JSON.stringify(newCart));
 }
 
 
