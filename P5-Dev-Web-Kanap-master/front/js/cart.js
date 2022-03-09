@@ -32,39 +32,46 @@ if (listCart) {
 
  }
 
- 
-
+// Ajouter au panier
   document.querySelectorAll(".cart").forEach(addToCart => {
     addToCart.addEventListener("click", function () {
       cart(this.dataset.id);
     })
   })
 
+// Faire le total des quantités
 
-  document.querySelectorAll(".deleteItem").forEach(Supprimer => {
-    Supprimer.addEventListener("click", () => {
-    })
-  });
+  let quantite = 0;
+
+  listCart.forEach(objet => {
+    quantite = quantite + objet.quantity;
+  
+  })
+  
+  document.querySelector("#totalQuantity").innerHTML += quantite
+
+// Faire le total du prix
+
+let total = 0;
+
+listCart.forEach(objet => {
+   total = total + objet.price * objet.quantity;
+   console.log(total)
+
+})
+
+document.querySelector("#totalPrice").innerHTML += total
+
+// Modifier la quantité d'un produit directement dans le panier
 
 
 
 
+// Supprimer un produit
+document.querySelectorAll(".deleteItem").forEach(Supprimer => {
+  Supprimer.addEventListener("click", () => {
+  })
+});
 
 
-
-
-
-  let totalQuantity = listCart.quantity;
-  let totalPrice = article.price + listCart.quantity;
-
-  document.querySelector("#cart__price").innerHTML +=
-    `   <p>Total (<span id="totalQuantity">${totalQuantity}</span> articles) : <span id="totalPrice">${total.Price}</span> €</p>`
-
-
-
-}
-
-
-
-
-  ;
+};

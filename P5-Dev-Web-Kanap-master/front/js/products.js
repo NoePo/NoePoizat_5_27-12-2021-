@@ -32,55 +32,7 @@ fetch("http://localhost:3000/api/products/" + articlesId)
         name: name
       }
 
-      /*
-                      if (Array.isArray(listCart) && listCart.color == color && listCart.articlesId == articlesId) {
-                      
-                      }
-                      else if (Array.isArray(listCart)) {
-                      listCart.push(productChose)
-                      }
-                      else {
-                      listCart = [
-                      productChose
-                      ]
-                      }
-                      ;
-      
-                      */
 
-      /*
-SI panier est un tableau
-SI le produit existe déjà dans le panier
-SINON
-SINON
-Créer tableau
-Mettre nouveauProduit dedans
-Assigner à listCart
- 
-const listCart = [
-  {
-    id: 1,
-    color: 'red',
-    quantity: 12
-  },
-  {
-    id: 2,
-    color: 'blue',
-    quantity: 14
-  }
-]
- 
-'blue' est égal 'red' => false => il continue
-'blue' est égal à 'blue' => vrai => 1
-
-const color = "red";
-
-const productChose = {
-  id : 2,
-  color: 'blue,
-  quantity : 1
-}
-*/
 
       if (Array.isArray(listCart)) {
         // => panier est un tableau
