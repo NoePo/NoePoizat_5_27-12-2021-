@@ -1,11 +1,14 @@
 let listCart = JSON.parse(localStorage.getItem('listCart'))
 
 const AfficherObjectPanier = (article) => {
-  document.querySelector("#cart__items").innerHTML +=
+  document.querySelector("#cart__items").innerHTML += 
     ` <article class="cart__item" data-id="${article.id}" data-color="${article.color}">
+
 <div class="cart__item__content">
   <div class="cart__item__content__description">
+    <h2>${article.name}</h2>
     <p>${article.color}</p>
+    <p>${article.price}€</p>
   </div>
   <div class="cart__item__content__settings">
     <div class="cart__item__content__settings__quantity">
@@ -25,17 +28,11 @@ if (listCart) {
 
 
   for (let i in listCart) {
-    console.log(listCart[i])
     AfficherObjectPanier(listCart[i]);
 
  }
 
-  /*
-  fetch("http://localhost:3000/api/products/"+listCart.id)
-  .then(data => data.json())
-  .then(jsonArticle => {
-          let article = new Article(jsonArticle); */
-
+ 
 
   document.querySelectorAll(".cart").forEach(addToCart => {
     addToCart.addEventListener("click", function () {
@@ -44,12 +41,18 @@ if (listCart) {
   })
 
 
-
   document.querySelectorAll(".deleteItem").forEach(Supprimer => {
-    Supprimer.addEventListener("click", function () {
-      listCart.unshift("articlesId");
+    Supprimer.addEventListener("click", () => {
     })
   });
+
+
+
+
+
+
+
+
 
   let totalQuantity = listCart.quantity;
   let totalPrice = article.price + listCart.quantity;
