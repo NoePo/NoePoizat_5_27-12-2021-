@@ -1,4 +1,4 @@
-/* Ajouter un produit */
+
 
 let listCart = JSON.parse(localStorage.getItem('listCart'))
 let params = (new URL(document.location)).searchParams;
