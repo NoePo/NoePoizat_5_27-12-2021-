@@ -1,15 +1,24 @@
 // récupérer les données du localStorage et les mettre dans listCart
 let listCart = JSON.parse(localStorage.getItem('listCart'))
 
+// sauvegarder le panier
+function saveCart(newCart) {
+  localStorage.setItem("listCart", JSON.stringify(newCart));
+}
+
+// Afficher les objets du panier à partir du localstorage
 const AfficherObjectPanier = (article) => {
   document.querySelector("#cart__items").innerHTML +=
     ` <article class="cart__item" data-id="${article.id}" data-color="${article.color}">
-
-<div class="cart__item__content">
-  <div class="cart__item__content__description">
+    <div class="cart__item__img">
+    <img src="${article.imageURL}" alt="${article.altTxt}">
+  </div>
+  <div class="cart__item__content">
+    <div class="cart__item__content__description">
     <h2>${article.name}</h2>
     <p>${article.color}</p>
     <p>${article.price}€</p>
+
   </div>
   <div class="cart__item__content__settings">
     <div class="cart__item__content__settings__quantity">
@@ -23,117 +32,120 @@ const AfficherObjectPanier = (article) => {
 </div>
 </article>
 `
+
+
 }
 
-if (listCart) {
+// Afficher le prix et les images depuis l'API 
+
+fetch("http://localhost:3000/api/products")
+.then(data => data.json())
+.then(jsonListArticle => {
 
 
   for (let i in listCart) {
-    AfficherObjectPanier(listCart[i]);
-
+     const trouverPrix = (OuiLePrix) => listCart[i].id == OuiLePrix._id;
+     const indexElementPrix = jsonListArticle.findIndex(trouverPrix);
+  const panier = {
+      id: listCart[i].id,
+      name: listCart[i].name,
+      color: listCart[i].color,
+      quantity: listCart[i].quantity,
+      price: jsonListArticle[indexElementPrix].price,
+      imageURL: jsonListArticle[indexElementPrix].imageUrl,
+      altTxt: jsonListArticle[indexElementPrix].altTxt
+    }   
+    AfficherObjectPanier(panier);
+  
   }
-
-  // Ajouter au panier
-  document.querySelectorAll(".cart").forEach(addToCart => {
-    addToCart.addEventListener("click", function () {
-      cart(this.dataset.id);
-    })
-  })
+  console.log(article.price)
 
   // Faire le total des quantités
-
+  
   let quantite = 0;
-
-  listCart.forEach(objet => {
+  
+  listCart.forEach(objet => {       
     quantite = quantite + objet.quantity;
-
   })
-
   document.querySelector("#totalQuantity").innerHTML += quantite
-
+  
   // Faire le total du prix
-
+  
   let total = 0;
-
+  
   listCart.forEach(objet => {
     total = total + objet.price * objet.quantity;
-
   })
-
   document.querySelector("#totalPrice").innerHTML += total
 
-  // Modifier la quantité d'un produit directement dans le panier
+})
 
+// Modifier la quantité d'un produit directement dans le panier
 
+let modifie = document.querySelectorAll(".itemQuantity");
 
-  let modifie = document.querySelectorAll(".itemQuantity");
-
-  modifie.forEach((changement) => {
-    changement.addEventListener("change", (event) => {
-      let idChangement = event.target.dataset.id;
-      let colorChangement = event.target.dataset.color;
-      let valueChangement = event.target.value;
-      const trouverArticle = (articleAVerifier) => idChangement == articleAVerifier.id && colorChangement == articleAVerifier.color;
-      const indexElementTrouver = listCart.findIndex(trouverArticle)
-      if (indexElementTrouver > -1) {
-        // => article trouvé
-        listCart[indexElementTrouver].quantity = parseInt(valueChangement);
-      }
-
-      saveCart(listCart);
-
-    })
-  })
-
-  function saveCart(newCart) {
-    localStorage.setItem("listCart", JSON.stringify(newCart));
-  }
-
-  // Supprimer un produit
-
-  let supprime = document.querySelectorAll(".deleteItem");
-
-  supprime.forEach((supprimer) => {
-    supprimer.addEventListener("click", (event) => {
-      let idATrouver = event.target.dataset.id;
-      let colorATrouver = event.target.dataset.color;
-      const trouverArticleSupprimer = (articleATrouver) => idATrouver == articleATrouver.id && colorATrouver == articleATrouver.color;
-      const indexElementASupprimer = listCart.findIndex(trouverArticleSupprimer)
-      if (indexElementASupprimer > -1) {
-        console.log(indexElementASupprimer)
-        listCart = listCart.filter((canapAFiltrer) => !(canapAFiltrer.color == colorATrouver && canapAFiltrer.id == idATrouver));
-      }
-
-      document.querySelector("#cart__items").innerHTML = ""
-      saveCart(listCart);
-     
-      for (let i in listCart) {
-        AfficherObjectPanier(listCart[i]);
-    
-      }
-
-
-    })
-  })
-
-  function saveCart(newCart) {
-    localStorage.setItem("listCart", JSON.stringify(newCart));
+modifie.forEach((changement) => {
+  // Ecouter quand il y a un changement
+  changement.addEventListener("change", (event) => {
+    let idChangement = event.target.dataset.id;     // Prend l'id, la couleur et la quantité de la cible du changement
+    let colorChangement = event.target.dataset.color;
+    let valueChangement = event.target.value;
+    const trouverArticle = (articleAVerifier) => idChangement == articleAVerifier.id && colorChangement == articleAVerifier.color;
+    const indexElementTrouver = listCart.findIndex(trouverArticle) // Trouver l'article similaire dans le tableau
+    if (indexElementTrouver > -1) {
+      // Article trouvé
+      listCart[indexElementTrouver].quantity = parseInt(valueChangement); // ParseInt renvoie un nombre au lieu d'une chaine de caractère
     }
 
+  // Sauvegarder le nouveau tableau
+    saveCart(listCart); 
+    location.reload();
 
-};
+  })
+})
+
+
+// Supprimer un produit
+
+let supprime = document.querySelectorAll(".deleteItem");
+
+supprime.forEach((supprimer) => {
+  supprimer.addEventListener("click", (event) => {
+    let idATrouver = event.target.dataset.id;
+    let colorATrouver = event.target.dataset.color;
+    const trouverArticleSupprimer = (articleATrouver) => idATrouver == articleATrouver.id && colorATrouver == articleATrouver.color;
+    const indexElementASupprimer = listCart.findIndex(trouverArticleSupprimer)
+    if (indexElementASupprimer > -1) {
+      listCart = listCart.filter((canapAFiltrer) => !(canapAFiltrer.color == colorATrouver && canapAFiltrer.id == idATrouver));
+    }
+
+    // Supprimer le HTML 
+    document.querySelector("#cart__items").innerHTML = ""
+    saveCart(listCart);
+    // Remettre le HTML sans l'objet supprimé
+    for (let i in listCart) {
+      AfficherObjectPanier(listCart[i]);
+  
+    }
+    
+    location.reload();
+
+
+  })
+})
 
 
 // Formulaire
 
-// firstName
+// FirstName
 
-let nameRegex = /^[a-z A-Z\-çàéèêëïîôüù ]{2,}$/;
+let nameRegex = /^[a-z A-Z\-çàéèêëïîôüù ]{2,}$/; // Condition du regex
 
 const firstName = document.getElementById('firstName');
 
 firstName.addEventListener('input', (e) => {
   e.preventDefault();
+  // => Si le test du Regex est faux ou qu'il n'y a rien dans la champ
   if (nameRegex.test(firstName.value) == false || firstName.value == "") {
     document.getElementById('firstNameErrorMsg').textContent = "Le prénom saisi n'est pas valide";
     return false;
@@ -143,7 +155,7 @@ firstName.addEventListener('input', (e) => {
   }
 });
 
-// lastName 
+// LastName 
 
 const lastName = document.getElementById('lastName');
 
@@ -158,7 +170,7 @@ lastName.addEventListener('input', (e) => {
   }
 });
 
-// address
+// Address
 
 let addressRegex = /^[\w\s,.'-çàéèêëïîôüù]{4,}$/;
 
@@ -176,7 +188,7 @@ address.addEventListener('input', (e) => {
   }
 });
 
-// city
+// City
 
 const city = document.getElementById('city');
 
@@ -214,7 +226,7 @@ const commander = document.getElementById("order")
 
 commander.addEventListener("click", (e) => {
   e.preventDefault();
-  // données du client
+  // Données du client
   const contact = {
     firstName: firstName.value,
     lastName: lastName.value,
@@ -223,9 +235,9 @@ commander.addEventListener("click", (e) => {
     email: mail.value,
   }
 console.log(listCart)
-  // condition regex
+  // Condition regex
   const TextRegex = nameRegex.test(firstName.value) == false || nameRegex.test(lastName.value) == false || addressRegex.test(address.value) == false || nameRegex.test(city.value) == false || mailRegex.test(mail.value) == false;
-  // si formulaire bien remplis et un article dans le panier
+  // Vérifier si le formulaire est bien remplis et un article dans le panier
   if (TextRegex || listCart.length == 0) {
     alert("Toutes les coordonnées doivent être renseignées afin de passer la commande et vous devez avoir au moins un produit dans votre panier")
   } 
@@ -243,14 +255,16 @@ const fetchSettings = {
   },
   body: JSON.stringify(commande)
 };
-
+ // Envoie des données à l'API
 fetch(fetchUrl, fetchSettings)
   .then((data) => {
     return data.json()
   })
-  .then((orderResult) => { // on appelle le paramètre orderResult parce que c'est à ça que ça correspond
+  .then((orderResult) => { 
     console.log(orderResult);
+
     const orderId = orderResult.orderId;
+    // Prendre l'orderId qu'on nous renvoie et l'envoyer avec l'utilisateur sur la page de confirmation
     const newUrl = "./confirmation.html?orderId=" + orderId;
     window.location.href = newUrl;
     localStorage.clear();

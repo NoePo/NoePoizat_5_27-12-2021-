@@ -21,14 +21,12 @@ fetch("http://localhost:3000/api/products/" + articlesId)
       e.preventDefault();
       const color = document.querySelector("#colors").value;
       const quantity = parseInt(document.querySelector("#quantity").value);
-      const price = parseInt(document.querySelector("#price").innerHTML);
       const name = document.querySelector("#title").innerHTML;
     
       let productChose = {
         id: articlesId,
         color: color,
         quantity: quantity,
-        price: price,
         name: name
       }
 
