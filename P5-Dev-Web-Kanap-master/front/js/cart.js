@@ -1,10 +1,13 @@
-// récupérer les données du localStorage et les mettre dans listCart
+// Récupérer les données du localStorage et les mettre dans listCart
 let listCart = JSON.parse(localStorage.getItem('listCart'))
 
-// sauvegarder le panier
+// Sauvegarder le panier
 function saveCart(newCart) {
   localStorage.setItem("listCart", JSON.stringify(newCart));
 }
+
+
+
 
 // Afficher les objets du panier à partir du localstorage
 const AfficherObjectPanier = (article) => {
@@ -32,8 +35,6 @@ const AfficherObjectPanier = (article) => {
 </div>
 </article>
 `
-
-
 }
 
 // Afficher le prix et les images depuis l'API 
@@ -56,9 +57,10 @@ fetch("http://localhost:3000/api/products")
       altTxt: jsonListArticle[indexElementPrix].altTxt
     }   
     AfficherObjectPanier(panier);
-  
   }
-  console.log(article.price)
+
+  mettreAJourBoutonModifier();
+  mettreAJourBoutonSupprimer();
 
   // Faire le total des quantités
   
@@ -71,30 +73,39 @@ fetch("http://localhost:3000/api/products")
   
   // Faire le total du prix
   
+
   let total = 0;
-  
   listCart.forEach(objet => {
-    total = total + objet.price * objet.quantity;
-  })
+    const trouverPrixPourTotal = (PrixTotal) => PrixTotal._id == objet.id;
+    const indexElementPrixTotal = jsonListArticle.findIndex(trouverPrixPourTotal);
+    
+    total = total + jsonListArticle[indexElementPrixTotal].price * objet.quantity;
+  }
+  
+  )
   document.querySelector("#totalPrice").innerHTML += total
 
 })
 
 // Modifier la quantité d'un produit directement dans le panier
 
+const mettreAJourBoutonModifier = () =>{
 let modifie = document.querySelectorAll(".itemQuantity");
 
 modifie.forEach((changement) => {
   // Ecouter quand il y a un changement
   changement.addEventListener("change", (event) => {
-    let idChangement = event.target.dataset.id;     // Prend l'id, la couleur et la quantité de la cible du changement
+    // Prendre l'id, la couleur et la quantité de la cible du changement
+    let idChangement = event.target.dataset.id;     
     let colorChangement = event.target.dataset.color;
     let valueChangement = event.target.value;
+    // Trouver l'article similaire dans le tableau
     const trouverArticle = (articleAVerifier) => idChangement == articleAVerifier.id && colorChangement == articleAVerifier.color;
-    const indexElementTrouver = listCart.findIndex(trouverArticle) // Trouver l'article similaire dans le tableau
+    const indexElementTrouver = listCart.findIndex(trouverArticle) 
+    // Modifier la quantité avec la nouveau valeur
     if (indexElementTrouver > -1) {
-      // Article trouvé
-      listCart[indexElementTrouver].quantity = parseInt(valueChangement); // ParseInt renvoie un nombre au lieu d'une chaine de caractère
+      // ParseInt renvoie un nombre au lieu d'une chaine de caractère
+      listCart[indexElementTrouver].quantity = parseInt(valueChangement); 
     }
 
   // Sauvegarder le nouveau tableau
@@ -103,10 +114,11 @@ modifie.forEach((changement) => {
 
   })
 })
-
+}
 
 // Supprimer un produit
 
+const mettreAJourBoutonSupprimer = () =>{
 let supprime = document.querySelectorAll(".deleteItem");
 
 supprime.forEach((supprimer) => {
@@ -133,7 +145,7 @@ supprime.forEach((supprimer) => {
 
   })
 })
-
+}
 
 // Formulaire
 
@@ -224,6 +236,7 @@ mail.addEventListener('input', (e) => {
 
 const commander = document.getElementById("order")
 
+// Ecouter si quelqu'un clique sur commander
 commander.addEventListener("click", (e) => {
   e.preventDefault();
   // Données du client
@@ -235,13 +248,14 @@ commander.addEventListener("click", (e) => {
     email: mail.value,
   }
 console.log(listCart)
-  // Condition regex
+  // Conditions regex
   const TextRegex = nameRegex.test(firstName.value) == false || nameRegex.test(lastName.value) == false || addressRegex.test(address.value) == false || nameRegex.test(city.value) == false || mailRegex.test(mail.value) == false;
   // Vérifier si le formulaire est bien remplis et un article dans le panier
   if (TextRegex || listCart.length == 0) {
+  // Si ce n'est pas le cas il y a une alerte
     alert("Toutes les coordonnées doivent être renseignées afin de passer la commande et vous devez avoir au moins un produit dans votre panier")
   } 
-
+  // Sinon on prend l'ID et les données du client
   else {
     let products = listCart.map((objet) => objet.id);
     let commande = {contact, products};
@@ -267,6 +281,7 @@ fetch(fetchUrl, fetchSettings)
     // Prendre l'orderId qu'on nous renvoie et l'envoyer avec l'utilisateur sur la page de confirmation
     const newUrl = "./confirmation.html?orderId=" + orderId;
     window.location.href = newUrl;
+    // Supprimer le localStorage
     localStorage.clear();
   });
 
