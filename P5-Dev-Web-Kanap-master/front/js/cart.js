@@ -45,6 +45,7 @@ fetch("http://localhost:3000/api/products")
 
 
   for (let i in listCart) {
+    // Trouver l'index de l'élément que l'on cherche
      const trouverPrix = (OuiLePrix) => listCart[i].id == OuiLePrix._id;
      const indexElementPrix = jsonListArticle.findIndex(trouverPrix);
   const panier = {

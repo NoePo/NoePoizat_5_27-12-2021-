@@ -1,6 +1,6 @@
 
 // Création du localstorage
-let listCart = JSON.parse(localStorage.getItem('listCart'))
+let listCart1 = JSON.parse(localStorage.getItem('listCart'))
 
 // Rechercher l'ID dans l'URL
 let params = (new URL(document.location)).searchParams;
@@ -16,7 +16,7 @@ fetch("http://localhost:3000/api/products/" + articlesId)
     document.querySelector("#price").innerHTML = `${article.price}`
     document.querySelector("#description").innerHTML += `${article.description}`
 
-    // 
+ 
     for (let color of article.colors) {
       document.querySelector("#colors").innerHTML += `<option value="${color}">${color}</option>`
     }
@@ -38,30 +38,30 @@ fetch("http://localhost:3000/api/products/" + articlesId)
 
 
         // Si le panier est un tableau
-      if (Array.isArray(listCart)) {
+      if (Array.isArray(listCart1)) {
 
         // Trouver l'index du nouveau produit dans ce tableau
         const trouverElement = (articleVerifie) => productChose.color == articleVerifie.color && productChose.id == articleVerifie.id;
-        const indexDeLelementTrouve = listCart.findIndex(trouverElement)
+        const indexDeLelementTrouve = listCart1.findIndex(trouverElement)
       
         // Si le produit existe
         if (indexDeLelementTrouve > -1) {
         // Incrémenter la quantité
-          listCart[indexDeLelementTrouve].quantity = productChose.quantity + listCart[indexDeLelementTrouve].quantity
+          listCart1[indexDeLelementTrouve].quantity = productChose.quantity + listCart1[indexDeLelementTrouve].quantity
         // Si le produit n'existe pas
         } else {
         // Mettre le produit dans le tableau listCart
-          listCart.push(productChose)
+          listCart1.push(productChose)
         }
         // S'il n'y a pas encore de tableau, créer un tableau
       } else {
-        listCart = [
+        listCart1 = [
           productChose
         ]
       }
 
       // Sauvegarder le tableau
-      saveCart(listCart);
+      saveCart(listCart1);
     });
 
   })
