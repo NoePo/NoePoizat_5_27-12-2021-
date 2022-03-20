@@ -1,14 +1,12 @@
 
-
-
 // Appel de l'API
 fetch("http://localhost:3000/api/products")
-.then(data => data.json())
-.then(jsonListArticle => {
-    for(let jsonArticle of jsonListArticle) {
-        let article = new Article(jsonArticle);
-        // Sélectionner la partie de HTML qu'on veut
-        document.querySelector(".items").innerHTML +=
+  .then(data => data.json())
+  .then(jsonListArticle => {
+    for (let jsonArticle of jsonListArticle) {
+      let article = new Article(jsonArticle);
+      // Sélectionner la partie de HTML qu'on veut
+      document.querySelector(".items").innerHTML +=
         // Ajout des canapés sur la page d'accueil
         `   <a href="./product.html?id=${article._id}">
         <article>
@@ -18,15 +16,12 @@ fetch("http://localhost:3000/api/products")
         </article>
       </a> 
       `
-      ;
-    }
-    
-})
+        ;}
+  })
 
-
-.catch((error=> {
-  console.log(error)
-}))
-;
+  .catch((error => {
+    console.log(error)
+  }))
+  ;
 
 

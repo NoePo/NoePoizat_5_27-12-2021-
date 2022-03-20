@@ -1,3 +1,11 @@
+// Création d'une class article
+class Article {
+  constructor(jsonArticle) {
+    jsonArticle && Object.assign(this, jsonArticle);
+  }
+
+
+}
 
 // Création du localstorage
 let listCart1 = JSON.parse(localStorage.getItem('listCart'))
@@ -16,7 +24,6 @@ fetch("http://localhost:3000/api/products/" + articlesId)
     document.querySelector("#price").innerHTML = `${article.price}`
     document.querySelector("#description").innerHTML += `${article.description}`
 
- 
     for (let color of article.colors) {
       document.querySelector("#colors").innerHTML += `<option value="${color}">${color}</option>`
     }
@@ -24,11 +31,11 @@ fetch("http://localhost:3000/api/products/" + articlesId)
     // Quand il y a un click sur le bouton addToCart
     document.querySelector("#addToCart").addEventListener("click", function (e) {
       e.preventDefault();
-    // Prendre les diffférentes valeurs
+      // Prendre les diffférentes valeurs
       const color = document.querySelector("#colors").value;
       const quantity = parseInt(document.querySelector("#quantity").value);
       const name = document.querySelector("#title").innerHTML;
-    // Les mettre dans la variable productChose
+      // Les mettre dans la variable productChose
       let productChose = {
         id: articlesId,
         color: color,
@@ -36,21 +43,20 @@ fetch("http://localhost:3000/api/products/" + articlesId)
         name: name
       }
 
-
-        // Si le panier est un tableau
+      // Si le panier est un tableau
       if (Array.isArray(listCart1)) {
 
         // Trouver l'index du nouveau produit dans ce tableau
         const trouverElement = (articleVerifie) => productChose.color == articleVerifie.color && productChose.id == articleVerifie.id;
         const indexDeLelementTrouve = listCart1.findIndex(trouverElement)
-      
+
         // Si le produit existe
         if (indexDeLelementTrouve > -1) {
-        // Incrémenter la quantité
+          // Incrémenter la quantité
           listCart1[indexDeLelementTrouve].quantity = productChose.quantity + listCart1[indexDeLelementTrouve].quantity
-        // Si le produit n'existe pas
+          // Si le produit n'existe pas
         } else {
-        // Mettre le produit dans le tableau listCart
+          // Mettre le produit dans le tableau listCart
           listCart1.push(productChose)
         }
         // S'il n'y a pas encore de tableau, créer un tableau
